@@ -1,0 +1,8 @@
+query getCategory($level: String){
+  getCategory(level: $level) {
+    id
+    nombre
+    imageUrl
+    special
+  }
+}

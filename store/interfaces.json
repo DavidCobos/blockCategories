@@ -1,0 +1,9 @@
+{
+  "showCategory": {
+    "component": "Categorias"
+  },
+
+  "showGraphCategory": {
+    "component": "CategoriasGraphQL"
+  }
+}
