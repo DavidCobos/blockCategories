@@ -1,7 +1,7 @@
-async function getCategories(){
+async function getCategories(categoryId: number){
     try
     {
-        const catRes = await fetch("https://davidprivarsa--privarsa.myvtex.com/privarsa/category", {
+        const catRes = await fetch("https://davidprivarsa--privarsa.myvtex.com/privarsa/subcategory/" + categoryId, {
             headers:{
                 "Cache-Control": "max-age=3600000, forceMaxAge"
             }
