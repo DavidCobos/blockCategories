@@ -12,7 +12,9 @@
     "module": "esnext",
     "moduleResolution": "node",
     "target": "es2017",
-    "lib": ["DOM"]
+    "lib": [
+      "DOM"
+    ]
   },
   "include": [
     "./typings/*.d.ts",

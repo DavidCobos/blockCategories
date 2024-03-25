@@ -4,4 +4,5 @@ export interface categoryResponse {
     title: string
     imageUrl: string
     special: boolean
+    url: string
 }

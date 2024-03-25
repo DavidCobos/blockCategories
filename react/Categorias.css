@@ -1,3 +1,19 @@
-.categoriasView :hover{
+.cardCV :hover {
+    cursor: pointer;
+}
+
+.cardCV {
+    width: 400px;
+    height: 400px;
+}
+
+.breadcrumbCV {
+    padding: 0px;
+    margin-left: 1em;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.breadcrumbCV :hover {
     cursor: pointer;
 }
