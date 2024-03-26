@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import getCategories from './Categoria.service'
 import { useCssHandles } from 'vtex.css-handles'
 import { categoryResponse } from './typings/categories'
-import { IconHome, IconCaret } from 'vtex.store-icons'
+import { IconHome } from 'vtex.store-icons'
 import './Categorias.css'
 
 interface CategoriaProps {}
@@ -34,13 +34,13 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({}) => {
   let breadcrumb, header, description;
 
   if (selectedCategory > 0) {
-    breadcrumb =  <span className='flex ml7'> <IconHome /> <p className={`${handles.breadcrumbCV}`}>familias</p> <IconCaret/> <p className={`${handles.breadcrumbCV}`}>&gt; {selectedCategoryName}</p> </span> ;
+    breadcrumb =  <span className='flex ml7'><span className={`${handles.breadcrumbCV} flex`} onClick={() => setSelected(0)}><IconHome /> <p className='pl2 ma0 pt1'>Familias</p></span>  <span className={`${handles.breadcrumbCV} flex`}> <p className='pl2 ma0 pt1'>&gt; {selectedCategoryName}</p> </span> </span> ;
     header = <h2 className={`${handles.headerCV} mt3 tc`}>{selectedCategoryName}</h2>;
-    description =  <h3 className={`${handles.descriptionCV} mt3 tc`}> Descripcion de familia</h3>;
+    description =  <h3 className={`${handles.descriptionCV} mt3 tc`}> Descripción de familia</h3>;
   } else {
-    breadcrumb = <span className='flex ml7'> <IconHome /> <p className={`${handles.breadcrumbCV}`}>familias</p> </span> ;
+    breadcrumb = <span className='flex ml7'> <span className={`${handles.breadcrumbCV} flex`} onClick={() => setSelected(0)}><IconHome/> <p className='pl2 ma0 pt1'>Familias</p></span> </span> ;
     header =  <h2 className={`${handles.headerCV} mt3 tc`}> Privarsa</h2>;
-    description = <p className={`${handles.descriptionCV} mt3 tc`}>Descripcion de familia</p>;
+    description = <p className={`${handles.descriptionCV} mt3 tc`}>Descripción de familia</p>;
   }
 
   return (
@@ -51,11 +51,20 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({}) => {
       <hr></hr>
       {description}
 
-      <div className='flex flex-wrap justify-center'>
+      {/* <div className='flex flex-wrap justify-center'>
         {categories.map((val:categoryResponse) => (
           <div onClick={() => selectCategory(val.id, val.nombre, val.url)} key={val.id} className={`${handles.cardCV} flex flex-column mv7 mh5 ba b--black-10 shadow-1`}>
               <img src={val.imageUrl} className={`${handles.imageCV} mt7`} />
-              <span className={`${handles.textCV} mt5 tc`} >{val.nombre}</span>
+              <h5 className={`${handles.textCV} mt5 tc`} >{val.nombre}</h5>
+          </div>
+        ))}
+      </div> */}
+
+      <div className='flex flex-wrap justify-center'>
+        {categories.map((val:categoryResponse) => (
+          <div onClick={() => selectCategory(val.id, val.nombre, val.url)} key={val.id} className={`${handles.cardCV} flex flex-column mv7 mh5 ba b--black-10 shadow-1`}>
+              <h4 className={`${handles.textCV} mt7 ml3`} >{val.nombre}</h4>
+              <img src={val.imageUrl} className={`${handles.imageCV} mt7`} />
           </div>
         ))}
       </div>
