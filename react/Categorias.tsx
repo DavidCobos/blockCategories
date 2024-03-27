@@ -5,11 +5,13 @@ import { categoryResponse } from './typings/categories'
 import { IconHome } from 'vtex.store-icons'
 import './Categorias.css'
 
-interface CategoriaProps {}
+interface CategoriaProps {
+  itemsLarge: number
+}
 
 const CSS_HANDLES = ['cardCV', 'imageCV','textCV', 'headerCV', 'descriptionCV', 'breadcrumbCV']
 
-const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({}) => {
+const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge}) => {
 
   const [categories, setCategories] = useState([])
   const [selectedCategory, setSelected] = useState(0)
@@ -43,6 +45,15 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({}) => {
     description = <p className={`${handles.descriptionCV} mt3 tc`}>Descripción de familia</p>;
   }
 
+  let decena = 100 / itemsLarge
+  if (decena != 25){
+    decena = decena - (decena%10)
+  }
+  const numeroLarge = decena.toString()
+
+  console.log(itemsLarge)
+  console.log(numeroLarge)
+
   return (
     <div className='mt7'>
 
@@ -60,12 +71,15 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({}) => {
         ))}
       </div> */}
 
-      <div className='flex flex-wrap justify-center'>
+      <div className='flex flex-wrap'>
         {categories.map((val:categoryResponse) => (
-          <div onClick={() => selectCategory(val.id, val.nombre, val.url)} key={val.id} className={`${handles.cardCV} flex flex-column mv7 mh5 ba b--black-10 shadow-1`}>
+          <div key={val.id} className={`w-${numeroLarge}-ns`}>
+            <div onClick={() => selectCategory(val.id, val.nombre, val.url)}  className={`${handles.cardCV} flex flex-column mv7 mh5 ba b--black-10 shadow-1 w-auto`}>
               <h4 className={`${handles.textCV} mt7 ml3`} >{val.nombre}</h4>
               <img src={val.imageUrl} className={`${handles.imageCV} mt7`} />
+            </div>
           </div>
+
         ))}
       </div>
 
@@ -74,10 +88,23 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({}) => {
 }
 
 Categorias.schema = {
-  title: 'editor.countdown.title',
-  description: 'editor.countdown.description',
+  title: 'editor.sideboard.title',
+  description: 'editor.sideboard.description',
   type: 'object',
-  properties: {},
+  properties: {
+    itemsLarge: {
+      title: 'Columnas',
+      description: 'Cantidad de columnas',
+      type: 'number',
+      default: 3,
+    },    
+    itemsSmall: {
+      title: 'Columnas',
+      description: 'Cantidad de columnas',
+      type: 'number',
+      default: 1,
+    },
+  },
 }
 
 export default Categorias

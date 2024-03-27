@@ -4,8 +4,7 @@
 
 .cardCV {
     background-color: white;
-    width: 400px;
-    height: 400px;
+    height: 300px;
     border-radius: 25px;
 }
 
@@ -20,4 +19,8 @@
 
 .textCV {
     color: #b22222;
+}
+
+.imageCV{
+ max-height: 100%;
 }
