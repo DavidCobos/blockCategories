@@ -9,7 +9,7 @@ interface CategoriaProps {
   itemsLarge: number
 }
 
-const CSS_HANDLES = ['cardCV', 'imageCV','textCV', 'headerCV', 'descriptionCV', 'breadcrumbCV']
+const CSS_HANDLES = ['cardCV', 'imageCV','textCV', 'headerCV', 'descriptionCV', 'breadcrumbCV', 'containerCV']
 
 const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge}) => {
 
@@ -46,13 +46,13 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge}) =
   }
 
   let decena = 100 / itemsLarge
-  if (decena != 25){
-    decena = decena - (decena%10)
-  }
-  const numeroLarge = decena.toString()
+  let numeroLarge = ""
 
-  console.log(itemsLarge)
-  console.log(numeroLarge)
+  if (itemsLarge == 3){
+    numeroLarge = 'third'
+  }else{
+    numeroLarge = decena.toString()
+  }
 
   return (
     <div className='mt7'>
@@ -71,7 +71,7 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge}) =
         ))}
       </div> */}
 
-      <div className='flex flex-wrap'>
+      <div className={`${handles.containerCV} flex flex-wrap`}>
         {categories.map((val:categoryResponse) => (
           <div key={val.id} className={`w-${numeroLarge}-ns`}>
             <div onClick={() => selectCategory(val.id, val.nombre, val.url)}  className={`${handles.cardCV} flex flex-column mv7 mh5 ba b--black-10 shadow-1 w-auto`}>
