@@ -9,13 +9,14 @@ interface CategoriaProps {
   itemsLarge: number
 }
 
-const CSS_HANDLES = ['cardCV', 'imageCV','textCV', 'headerCV', 'descriptionCV', 'breadcrumbCV', 'containerCV']
+const CSS_HANDLES = ['cardCV', 'imageCV','textCV', 'headerCV', 'descriptionCV', 'breadcrumbCV', 'containerCV', 'buscadorCV']
 
 const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge}) => {
 
-  const [categories, setCategories] = useState([])
+  const [categories, setCategories]: any[] = useState([])
   const [selectedCategory, setSelected] = useState(0)
   const [selectedCategoryName, setSelectedName] = useState('')
+  const [search, setSearch] = useState('')
 
   const selectCategory = (id:number, nombre:string, url:string) => {
 
@@ -30,8 +31,17 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge}) =
   const handles = useCssHandles(CSS_HANDLES)
 
   useEffect(() => {
-    getCategories(selectedCategory).then((data:any) => setCategories(data.categorias) ).catch(() => console.log("Error getCategories"))
-  },[selectedCategory])
+    getCategories(selectedCategory).then((data:any) => {
+      
+      let filtro:any[] = []
+      data.categorias.map((i:any) => {
+        if (i.nombre.toUpperCase().includes(search.toUpperCase())){
+          filtro.push(i)
+        }
+      })
+      setCategories(filtro)
+    }).catch(() => console.log("Error getCategories"))
+  },[selectedCategory, search])
 
   let breadcrumb, header, description;
 
@@ -45,7 +55,7 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge}) =
     description = <p className={`${handles.descriptionCV} mt3 tc`}>Descripción de familia</p>;
   }
 
-  let decena = 100 / itemsLarge
+  const decena = 100 / itemsLarge
   let numeroLarge = ""
 
   if (itemsLarge == 3){
@@ -62,14 +72,9 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge}) =
       <hr></hr>
       {description}
 
-      {/* <div className='flex flex-wrap justify-center'>
-        {categories.map((val:categoryResponse) => (
-          <div onClick={() => selectCategory(val.id, val.nombre, val.url)} key={val.id} className={`${handles.cardCV} flex flex-column mv7 mh5 ba b--black-10 shadow-1`}>
-              <img src={val.imageUrl} className={`${handles.imageCV} mt7`} />
-              <h5 className={`${handles.textCV} mt5 tc`} >{val.nombre}</h5>
-          </div>
-        ))}
-      </div> */}
+      <div>
+        <input id='txtBuscador' type='text' className={`${handles.buscadorCV}`} value={search} onChange={(e: any) => setSearch(e.target.value)} ></input>
+      </div>
 
       <div className={`${handles.containerCV} flex flex-wrap`}>
         {categories.map((val:categoryResponse) => (
