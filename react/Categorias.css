@@ -24,3 +24,11 @@
 .imageCV{
     object-fit: cover;
 }
+
+.mostrarmas :hover{
+    cursor: pointer;
+}
+
+.buscadorCV{
+    font-family: FontAwesome
+}
