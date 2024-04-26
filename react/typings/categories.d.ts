@@ -6,3 +6,4 @@ export interface categoryResponse {
     special: boolean
     url: string
 }
+

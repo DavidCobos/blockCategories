@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react'
-import getCategories from './Categoria.service'
+import servicioPrivarsa from './privarsaVtex.service'
 import { useCssHandles } from 'vtex.css-handles'
 import { categoryResponse } from './typings/categories'
 import { IconHome } from 'vtex.store-icons'
 import './Categorias.css'
+import FamilyView from './FamilyView'
+import ProductView from './ProductView'
+import { productResponse } from './typings/productos'
 
 interface CategoriaProps {
   itemsLarge: number
@@ -15,22 +18,13 @@ const CSS_HANDLES = ['cardCV', 'imageCV','textCV', 'headerCV', 'descriptionCV', 
 const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge, mostrarMas}) => {
 
   const [categories, setCategories]: any[] = useState([])
-  const [selectedCategory, setSelected] = useState(0)
-  const [selectedCategoryName, setSelectedName] = useState('')
+  const [products, setProducts]: any[] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState<categoryResponse>({id: 0, nombre: '', title: '', imageUrl: '', special: false,  url:''})
+  const [selectedSubfamily, setSelectedSubfamily] = useState<categoryResponse>({id: 0, nombre: '', title: '', imageUrl: '', special: false,  url:''})
+  const [selectedProduct, setSelectedProduct] = useState<productResponse>({id: 0, name: '', description: '', imageUrl: ''})
   const [search, setSearch] = useState('')
   const [cargas, setCargas] = useState(1)
   const [mostrarBoton, setMostrar] = useState(false)
-
-  //Breadcrumb
-  const selectCategory = (id:number, nombre:string, url:string) => {
-    if (selectedCategory > 0) {
-      window.location.href = url.replace('https://privarsa.vtexcommercestable.com.br', 'https://privarsa.myvtex.com');
-    }else{
-      setSelected(id)
-      setSelectedName(nombre)
-      setCargas(1)
-    }
-  }
 
   const handles = useCssHandles(CSS_HANDLES)
   
@@ -40,7 +34,7 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge, mo
 
   useEffect(() => {
     setMostrar(false)
-    getCategories(selectedCategory).then((data:any) => {
+    servicioPrivarsa.getCategories(selectedCategory.id).then((data:any) => {
       
       let filtro:any[] = []
       data.categorias.map((i:any) => {
@@ -58,18 +52,56 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge, mo
     }).catch(() => console.log("Error getCategories"))
   },[selectedCategory, search, cargas])
 
+  //Productos y busqueda
+  useEffect(() => {
+    if(selectedSubfamily.id > 0){
+      setMostrar(false)
+      servicioPrivarsa.getMainProducts(selectedSubfamily.id).then((data:any) => {
+        
+        let filtroP:any[] = []
+        console.log(data)
+        data.mainProducts.map((i:any) => {
+          console.log(i)
+          if (i.name.toUpperCase().includes(search.toUpperCase())){
+            if (mostrarTodo || maxItems != 0) {
+              filtroP.push(i)
+              maxItems = maxItems - 1
+            }else if(!mostrarTodo){
+              setMostrar(true)
+            }
+          }
+        })
 
-  console.log(mostrarBoton)
+        setProducts(filtroP)
+      }).catch((ex) => console.log(ex))
+    }
+  },[selectedSubfamily, search, cargas])
+
+  //Breadcrumb
+  const selectCategory = (category: categoryResponse) => {
+    if (selectedCategory.id == 0) {
+      setSelectedCategory(category)
+      setCargas(1)
+    }else{
+      setSelectedSubfamily(category)
+      setCargas(1)
+    }
+  }
+
+  const selectProduct = (product: productResponse) => {
+    setSelectedProduct(product)
+    console.log(selectedProduct)
+  }
 
   //Encabezados
   let breadcrumb, header, description;
 
-  if (selectedCategory > 0) {
-    breadcrumb = <span className='flex ml7'><span className={`${handles.breadcrumbCV} flex`} onClick={() => setSelected(0)}><IconHome /> <p className='pl2 ma0 pt1'>Familias</p></span>  <span className={`${handles.breadcrumbCV} flex`}> <p className='pl2 ma0 pt1'>&gt; {selectedCategoryName}</p> </span> </span> ;
-    header = <h2 className={`${handles.headerCV} mt3 tc`}>{selectedCategoryName}</h2>;
-    description =  <h3 className={`${handles.descriptionCV} mt3 tc`}> Descripción de familia</h3>;
+  if (selectedCategory.id > 0) {
+    breadcrumb = <span className='flex ml7'><span className={`${handles.breadcrumbCV} flex`} onClick={() => setSelectedCategory({id: 0, nombre: '', title: '', imageUrl: '', special: false,  url:''})}><IconHome /> <p className='pl2 ma0 pt1'>Familias</p></span>  <span className={`${handles.breadcrumbCV} flex`}> <p className='pl2 ma0 pt1'>&gt; {selectedCategory.nombre}</p> </span> </span> ;
+    header = <h2 className={`${handles.headerCV} mt3 tc`}>{selectedCategory.nombre}</h2>;
+    description =  <h3 className={`${handles.descriptionCV} mt3 tc`}> Descripción de subfamilia</h3>;
   } else {
-    breadcrumb = <span className='flex ml7'> <span className={`${handles.breadcrumbCV} flex`} onClick={() => setSelected(0)}><IconHome/> <p className='pl2 ma0 pt1'>Familias</p></span> </span> ;
+    breadcrumb = <span className='flex ml7'> <span className={`${handles.breadcrumbCV} flex`} onClick={() => setSelectedCategory({id: 0, nombre: '', title: '', imageUrl: '', special: false,  url:''})}><IconHome/> <p className='pl2 ma0 pt1'>Familias</p></span> </span> ;
     header =  <h2 className={`${handles.headerCV} mt3 tc`}> Privarsa</h2>;
     description = <p className={`${handles.descriptionCV} mt3 tc`}>Descripción de familia</p>;
   }
@@ -83,6 +115,19 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge, mo
   }else{
     numeroLarge = decena.toString()
   }
+
+  //Cambio a vista de producto
+  let main;
+
+  if(selectedSubfamily.id > 0){
+    console.log(products)
+    main = ProductView({products: products, large: numeroLarge, selectProduct: selectProduct})
+  }else{
+    main = FamilyView({categories: categories, large: numeroLarge, selectCategory: selectCategory})
+  }
+
+
+
 
   return (
     
@@ -103,16 +148,7 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge, mo
         {description}
       </div>
 
-      <div className={`${handles.containerCV} flex flex-wrap`}>
-        {categories.map((val:categoryResponse) => (
-          <div key={val.id} className={`w-${numeroLarge}-ns`}>
-            <div onClick={() => selectCategory(val.id, val.nombre, val.url)}  className={`${handles.cardCV} flex flex-column mv7 mh5 ba b--black-10 shadow-1 w-auto`}>
-              <h4 className={`${handles.textCV} mt7 ml3`} >{val.nombre}</h4>
-              <img src={val.imageUrl} className={`${handles.imageCV} mt7`} />
-            </div>
-          </div>
-        ))}
-      </div>
+      {main}
 
       {mostrarBoton 
       ? 
@@ -126,8 +162,6 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge, mo
       :
       <></>
       }
-      
-
 
     </div>
   )

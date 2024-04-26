@@ -47,8 +47,8 @@ const CategoriasGraphQL: StorefrontFunctionComponent<CategoriaGraphQLProps> = ({
 }
 
 CategoriasGraphQL.schema = {
-  title: 'editor.sideboard.title',
-  description: 'editor.sideboard.description',
+  title: 'editor.countdown.title',
+  description: 'editor.countdown.description',
   type: 'object',
   properties: {},
 }

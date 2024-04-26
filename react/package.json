@@ -24,7 +24,7 @@
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.5.1",
     "graphql": "^14.6.0",
-    "privarsa.categorias": "https://davidprivarsa--privarsa.myvtex.com/_v/private/typings/linked/v1/privarsa.categorias@0.0.1+build1711409382/public/@types/privarsa.categorias",
+    "privarsa.categorias": "https://davidprivarsa--privarsa.myvtex.com/_v/private/typings/linked/v1/privarsa.categorias@0.0.1+build1712267348/public/@types/privarsa.categorias",
     "privarsa.graphql-category": "http://privarsa.vtexassets.com/_v/public/typings/v1/privarsa.graphql-category@0.0.1/public/@types/privarsa.graphql-category",
     "typescript": "3.9.7",
     "vtex.css-handles": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.css-handles@0.4.4/public/@types/vtex.css-handles",

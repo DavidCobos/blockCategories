@@ -1,8 +1,6 @@
 export interface productResponse {
     id: number
-    nombre: string
-    title: string
+    name: string
+    description: string
     imageUrl: string
-    url: string
-    properties: []
 }

@@ -1,6 +1,5 @@
 import React from 'react'
 import { useCssHandles } from 'vtex.css-handles'
-import './Productos.css'
 
 interface ProductoProps {}
 
