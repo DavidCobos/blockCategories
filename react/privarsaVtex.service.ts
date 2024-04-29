@@ -40,7 +40,7 @@ async function getMainProducts(familysubId: number){
     }
 }
 
-async function getProductSpecification(mainProductId: string){
+async function getProductSpecification(mainProductId: number){
     try
     {
         const catRes = await fetch("https://davidprivarsa--privarsa.myvtex.com/privarsa/productspecifications/" + mainProductId, {
