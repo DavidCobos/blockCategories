@@ -15,7 +15,7 @@
     "vtex.css-handles": "0.x",
     "vtex.store-icons": "0.x",
     "privarsa.graphql-category": "0.x",
-    "vtex.paginated-table": "0.x"
+    "vtex.product-context": "0.x"
   },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
