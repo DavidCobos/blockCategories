@@ -1,5 +1,5 @@
 export interface productResponse {
-    id: number
+    id: stirng
     name: string
     description: string
     imageUrl: string

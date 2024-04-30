@@ -6,4 +6,6 @@ declare module 'vtex.styleguide' {
   interface InputProps {
     [key: string]: any
   }
+
+  export const Table
 }

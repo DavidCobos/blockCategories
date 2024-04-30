@@ -84,11 +84,8 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge, mo
 
   //Especificacion de productos
   useEffect(() => {
-    console.log('entra2')
     if(selectedProduct.id > 0){
-      console.log('entra')
       servicioPrivarsa.getProductSpecification(selectedProduct.id).then((data:any) => {
-        console.log(data.productsSpecifications)
         setProductsSpecidfications(data.productsSpecifications)
       }).catch((ex) => console.log(ex))
     }
@@ -170,19 +167,6 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge, mo
     numeroLarge = decena.toString()
   }
 
-  //Cambio a vista de producto
-  let main;
-
-  if(selectedProduct.id > 0){
-    main = ProductSpecificationView({products: productsSpecifications, addProduct: agregarCarrito})
-  }else if(selectedSubfamily.id > 0){
-    main = ProductView({products: products, large: numeroLarge, selectProduct: selectProduct})
-  }else{
-    main = FamilyView({categories: categories, large: numeroLarge, selectCategory: selectCategory})
-  }
-
-
-
 
   return (
     
@@ -203,7 +187,24 @@ const Categorias: StorefrontFunctionComponent<CategoriaProps> = ({itemsLarge, mo
         {description}
       </div>
 
-      {main}
+      {selectedProduct.id > 0
+      ?
+      <ProductSpecificationView products={productsSpecifications} addProduct={agregarCarrito}/>
+      :
+      <></>
+      }
+      {(selectedSubfamily.id > 0 && selectedProduct.id == 0) 
+      ?
+      <ProductView products={products} large={numeroLarge} selectProduct={selectProduct}/>
+      :
+      <></>
+      }
+      {selectedSubfamily.id == 0
+      ?
+      <FamilyView categories={categories} large={numeroLarge} selectCategory={selectCategory}/>
+      :
+      <></>
+      }
 
       {mostrarBoton 
       ? 
