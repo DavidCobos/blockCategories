@@ -38,6 +38,7 @@ const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTablePr
   const [defaultSchema, setdefaultSchema] = useState({properties:{}})
   const [defaultFilters, setdefaultFilters] = useState({})
 
+  let datos:any
   //dataSource
   useEffect(() => {
     const itemsT:any[] = []
@@ -69,7 +70,7 @@ const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTablePr
         }
 
         itm['descripcion'] = skuItem.nameComplete
-        itm['cont_compra'] = {valor: 1, id: itm.sku};
+        itm['cont_compra'] = {valor: 1, id: itm['sku']};
 
         let coincide = true
         if(filtros.length > 0){
@@ -85,7 +86,8 @@ const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTablePr
         }
 
         setTotal(itemsT.length)
-        setdatosPagina(itemsT.slice((currentProps.currentItemFrom - 1), currentProps.currentItemTo))
+        datos = itemsT.slice((currentProps.currentItemFrom - 1), currentProps.currentItemTo)
+        setdatosPagina(datos)
 
       })
     }).catch((ex) => console.log(ex))
@@ -101,16 +103,14 @@ const simpleInputObject = ({ value, onChange }: { value: string | null; onChange
 
 useEffect(() => {
   let addRemoveCounter = (valor: number, id: string) => {
-    console.log(valor)
-    const reset = datosPagina.map((itm:any) => {
+    const reset = datos.map((itm:any) => {
       if(itm.sku == id)
-        itm.cont_compra = valor
+        itm.cont_compra = {valor: valor, id: id}
   
       return itm
     }); 
   
-    console.log(reset)
-    //setdatosPagina(reset)
+    setdatosPagina(reset)
   }
 
   const filterOptions: any = {}
@@ -182,7 +182,6 @@ useEffect(() => {
     }); 
   
     schemaResult.properties["cont_compra"] = { title: "Comprar", cellRenderer: ({ cellData }: any) => {
-      console.log(datosPagina)
       return (
         <div className={`${handles.SKUSpecificationTable_CustomCell} flex flex-wrap`}>
           <NumericStepper
