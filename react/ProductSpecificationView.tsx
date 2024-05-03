@@ -88,7 +88,7 @@ console.log(addProduct)
     properties: {
       sku: {
         title: 'SKU',
-        width: 300,
+        width: 100,
       }
     },
   }

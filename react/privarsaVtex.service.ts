@@ -19,10 +19,10 @@ async function getCategories(categoryId: number){
     }
 }
 
-async function getMainProducts(familysubId: number){
+async function getMainProductInfo(productId: string){
     try
     {
-        const catRes = await fetch("https://davidprivarsa--privarsa.myvtex.com/privarsa/mainproducts/" + familysubId, {
+        const catRes = await fetch("https://davidprivarsa--privarsa.myvtex.com/privarsa/mainproductinfo/" + productId, {
             headers:{
                 "Cache-Control": "max-age=3600000, forceMaxAge"
             }
@@ -63,7 +63,7 @@ async function getProductSpecification(mainProductId: number){
 
 const servicioPrivarsa = {
     getCategories,
-    getMainProducts,
+    getMainProductInfo,
     getProductSpecification
 }
 

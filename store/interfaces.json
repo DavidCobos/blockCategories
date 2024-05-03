@@ -1,10 +1,6 @@
 {
-  "showCategory": {
-    "component": "Categorias"
-  },
-
-  "showGraphCategory": {
-    "component": "CategoriasGraphQL"
+  "categoriesNavegator": {
+    "component": "CategoriasNavegator"
   },
 
   "skuSpecificationTable": {

@@ -8,4 +8,9 @@ declare module 'vtex.styleguide' {
   }
 
   export const Table
+
+  export const NumericStepper
+
+  export const Button
+
 }
