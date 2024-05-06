@@ -1,6 +1,6 @@
 import React, {useState, useEffect } from 'react'
 import { useCssHandles } from 'vtex.css-handles'
-import { useProduct } from 'vtex.product-context'
+import { useProduct, useProductDispatch } from 'vtex.product-context'
 import servicioPrivarsa from './privarsaVtex.service'
 import { MainProductInfoResponse, Specification, ProductSpecificationResponse, ProductsSpecification } from './typings/categoriesNavegatorInterfaces'
 import { Input, Table, NumericStepper, Button } from 'vtex.styleguide'
@@ -25,6 +25,7 @@ const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTablePr
   const handles = useCssHandles(CSS_HANDLES)
   const tableLength = registros
   const productContextValue = useProduct();
+  const dispatch = useProductDispatch();
   const initialProps:TablePagination = {
     currentPage: 1,
     currentItemFrom: 1,
@@ -100,18 +101,33 @@ const simpleInputObject = ({ value, onChange }: { value: string | null; onChange
   return <Input value={value || ''} onChange={(e:any) => onChange(e.target.value)} />;
 };
 
+let addRemoveCounter = (valor: number, id: string) => {
+  const reset = datos.map((itm:any) => {
+    if(itm.sku == id)
+      itm.cont_compra = {valor: valor, id: id}
+
+    return itm
+  }); 
+
+  setdatosPagina(reset)
+}
+
+let agregarCarrito = (e:any, cellData:any) => {
+  console.log(e)
+  console.log(cellData)
+  
+  if(dispatch){
+    dispatch({
+      type: "SET_QUANTITY",
+      args: { quantity: 5}
+    })
+  }
+
+  console.log(productContextValue?.selectedQuantity)
+
+}
 
 useEffect(() => {
-  let addRemoveCounter = (valor: number, id: string) => {
-    const reset = datos.map((itm:any) => {
-      if(itm.sku == id)
-        itm.cont_compra = {valor: valor, id: id}
-  
-      return itm
-    }); 
-  
-    setdatosPagina(reset)
-  }
 
   const filterOptions: any = {}
   filterOptions['sku'] = {
@@ -190,7 +206,7 @@ useEffect(() => {
           minValue= '1'
           onChange={(event: any) => addRemoveCounter(event.value, cellData.id )}
           />
-          <Button variation="primary" size="small" onClick ={(e:any)=> alert(e)}><IconCart/></Button>
+          <Button variation="primary" size="small" onClick ={(e:any)=> agregarCarrito(e, cellData)}><IconCart/></Button>
         </div>
       )
     }, width: 300}

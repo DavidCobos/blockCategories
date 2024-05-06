@@ -126,8 +126,6 @@ const CategoriasNavegator: StorefrontFunctionComponent<CategoriasNavProps> = ({i
       :
       <></>
       }
-      
-
 
     </div>
   )
