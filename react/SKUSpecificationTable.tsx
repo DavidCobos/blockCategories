@@ -18,7 +18,7 @@ interface TablePagination {
   currentItemTo: number
 }
 
-const CSS_HANDLES = ['SKUSpecificationTable_Container', 'SKUSpecificationTable_CustomCell']
+const CSS_HANDLES = ['SKUSpecificationTable_Container', 'SKUSpecificationTable_CustomCell', 'SKUSpecificationTable_CustomHeader']
 
 const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTableProps> = ({registros}) => {
 
@@ -72,6 +72,10 @@ const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTablePr
 
         itm['descripcion'] = skuItem.nameComplete
         itm['cont_compra'] = {valor: 1, id: itm['sku']};
+
+        if(skuItem.sellers.length > 0){
+          itm['precio'] = skuItem.sellers[0].commertialOffer.Price
+        }
 
         let coincide = true
         if(filtros.length > 0){
@@ -168,10 +172,16 @@ useEffect(() => {
       sku: {
         title: 'SKU',
         width: 100,
+        headerRenderer: (elem: any ) => {
+          return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
+        },
       },
       descripcion: {
         title: 'Descripción',
         width: 200,
+        headerRenderer: (elem: any ) => {
+          return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
+        },
       }
     },
   }
@@ -194,22 +204,43 @@ useEffect(() => {
           },
         ],
       };
-      schemaResult.properties[especifiacion.header] = { title: especifiacion.name, width: 100 };
+      schemaResult.properties[especifiacion.header] = { 
+        title: especifiacion.name, 
+        width: 100,
+        headerRenderer: (elem: any ) => {
+          return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
+        },
+       };
     }); 
   
-    schemaResult.properties["cont_compra"] = { title: "Comprar", cellRenderer: ({ cellData }: any) => {
-      return (
-        <div className={`${handles.SKUSpecificationTable_CustomCell} flex flex-wrap`}>
-          <NumericStepper
-          size="small"
-          value= {cellData.valor}
-          minValue= '1'
-          onChange={(event: any) => addRemoveCounter(event.value, cellData.id )}
-          />
-          <Button variation="primary" size="small" onClick ={(e:any)=> agregarCarrito(e, cellData)}><IconCart/></Button>
-        </div>
-      )
-    }, width: 300}
+    schemaResult.properties["precio"] = {
+      title: 'Precio',
+      width: 100,
+      headerRenderer: (elem: any ) => {
+        return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
+      },
+    },
+
+    schemaResult.properties["cont_compra"] = { 
+      title: "Comprar", 
+      cellRenderer: ({ cellData }: any) => {
+        return (
+          <div className={`${handles.SKUSpecificationTable_CustomCell} flex flex-wrap`}>
+            <NumericStepper
+            size="small"
+            value= {cellData.valor}
+            minValue= '1'
+            onChange={(event: any) => addRemoveCounter(event.value, cellData.id )}
+            />
+            <Button variation="primary" size="small" onClick ={(e:any)=> agregarCarrito(e, cellData)}><IconCart/></Button>
+          </div>
+        )
+      }, 
+      width: 300,
+      headerRenderer: (elem: any ) => {
+        return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
+      },
+    }
   });
 
   setdefaultSchema(schemaResult)

@@ -12,5 +12,4 @@ declare module 'vtex.styleguide' {
   export const NumericStepper
 
   export const Button
-
 }
