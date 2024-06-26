@@ -9,6 +9,10 @@ declare module 'vtex.styleguide' {
 
   export const Table
 
+  export const EXPERIMENTAL_useTableMeasures
+
+  export const EXPERIMENTAL_Table
+
   export const NumericStepper
 
   export const Button

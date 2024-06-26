@@ -10,20 +10,11 @@ import { MainProductInfoResponse, Specification, ProductSpecificationResponse, P
 import { Input, Table, NumericStepper, Button } from 'vtex.styleguide'
 import { IconCart } from 'vtex.store-icons'
 import './SKUSpecificationTable.css'
-import { OrderFormProvider } from 'vtex.order-manager/OrderForm'
-import { OrderItemsProvider } from 'vtex.order-items/OrderItems'
+import { useOrderItems } from 'vtex.order-items/OrderItems'
 
 interface SKUSpecificationTableProps {
   registros: number
 }
-
-const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTableProps> = ({registros}) => (
-  <OrderFormProvider>
-    <OrderItemsProvider>
-      <SKUSpecificationTableInner registros={registros} />
-    </OrderItemsProvider>
-  </OrderFormProvider>
-)
 
 interface TablePagination {
   currentPage: number,
@@ -33,10 +24,9 @@ interface TablePagination {
 
 const CSS_HANDLES = ['SKUSpecificationTable_Container', 'SKUSpecificationTable_CustomCell', 'SKUSpecificationTable_CustomHeader']
 
-const SKUSpecificationTableInner: StorefrontFunctionComponent<SKUSpecificationTableProps> = ({registros}) => {
+const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTableProps> = ({registros}) => {
 
-  // const { orderForm: { items } } = useOrderForm()
-  // const { updateQuantity, removeItem } = useOrderItems()
+  const {addItems} = useOrderItems()
 
   const handles = useCssHandles(CSS_HANDLES)
   const tableLength = registros
@@ -136,18 +126,15 @@ const SKUSpecificationTableInner: StorefrontFunctionComponent<SKUSpecificationTa
     console.log(e)
     console.log(cellData)
     
-    if(dispatch){
-      dispatch({
-        type: "SET_QUANTITY",
-        args: { quantity: 5}
-      })
-      dispatch({
-        type: "SET_BUY_BUTTON_CLICKED",
-        args: { clicked: true}
-      })
-    }
+    addItems([
+      {
+        id: cellData.id,
+        quantity: cellData.valor,
+        seller: "1"
+      }
+    ])
 
-    console.log(productContextValue?.selectedQuantity)
+    console.log(addItems)
 
   }
 
