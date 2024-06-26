@@ -1,3 +1,7 @@
+
+
+
+
 import React, {useState, useEffect } from 'react'
 import { useCssHandles } from 'vtex.css-handles'
 import { useProduct, useProductDispatch } from 'vtex.product-context'
@@ -6,11 +10,20 @@ import { MainProductInfoResponse, Specification, ProductSpecificationResponse, P
 import { Input, Table, NumericStepper, Button } from 'vtex.styleguide'
 import { IconCart } from 'vtex.store-icons'
 import './SKUSpecificationTable.css'
-
+import { OrderFormProvider } from 'vtex.order-manager/OrderForm'
+import { OrderItemsProvider } from 'vtex.order-items/OrderItems'
 
 interface SKUSpecificationTableProps {
   registros: number
 }
+
+const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTableProps> = ({registros}) => (
+  <OrderFormProvider>
+    <OrderItemsProvider>
+      <SKUSpecificationTableInner registros={registros} />
+    </OrderItemsProvider>
+  </OrderFormProvider>
+)
 
 interface TablePagination {
   currentPage: number,
@@ -20,7 +33,10 @@ interface TablePagination {
 
 const CSS_HANDLES = ['SKUSpecificationTable_Container', 'SKUSpecificationTable_CustomCell', 'SKUSpecificationTable_CustomHeader']
 
-const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTableProps> = ({registros}) => {
+const SKUSpecificationTableInner: StorefrontFunctionComponent<SKUSpecificationTableProps> = ({registros}) => {
+
+  // const { orderForm: { items } } = useOrderForm()
+  // const { updateQuantity, removeItem } = useOrderItems()
 
   const handles = useCssHandles(CSS_HANDLES)
   const tableLength = registros
@@ -39,7 +55,7 @@ const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTablePr
   const [defaultSchema, setdefaultSchema] = useState({properties:{}})
   const [defaultFilters, setdefaultFilters] = useState({})
 
-  let datos:any
+  let datos:any[] = []
   //dataSource
   useEffect(() => {
     const itemsT:any[] = []
@@ -70,11 +86,13 @@ const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTablePr
           itm['sku'] = privarsaId;
         }
 
-        itm['descripcion'] = skuItem.nameComplete
+        itm['descripcion'] = skuItem.name;
         itm['cont_compra'] = {valor: 1, id: itm['sku']};
+        itm['itm'] = skuItem;
+        itm['cotizar'] = 3;
 
         if(skuItem.sellers.length > 0){
-          itm['precio'] = skuItem.sellers[0].commertialOffer.Price
+          itm['precio'] = skuItem.sellers[0].commertialOffer.Price;
         }
 
         let coincide = true
@@ -100,174 +118,204 @@ const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTablePr
   },[productContextValue, currentProps, filtros])
 
 
-// Schema and filters
-const simpleInputObject = ({ value, onChange }: { value: string | null; onChange: (value: string) => void }) => {
-  return <Input value={value || ''} onChange={(e:any) => onChange(e.target.value)} />;
-};
+  // Schema and filters
+  const simpleInputObject = ({ value, onChange }: { value: string | null; onChange: (value: string) => void }) => {
+    return <Input value={value || ''} onChange={(e:any) => onChange(e.target.value)} />;
+  };
 
-let addRemoveCounter = (valor: number, id: string) => {
-  const reset = datos.map((itm:any) => {
-    if(itm.sku == id)
-      itm.cont_compra = {valor: valor, id: id}
-
-    return itm
-  }); 
-
-  setdatosPagina(reset)
-}
-
-let agregarCarrito = (e:any, cellData:any) => {
-  console.log(e)
-  console.log(cellData)
-  
-  if(dispatch){
-    dispatch({
-      type: "SET_QUANTITY",
-      args: { quantity: 5}
-    })
+  let addRemoveCounter = (valor: number, cellData:{valor: number, id: string}) => {
+    cellData.valor = valor;
   }
 
-  console.log(productContextValue?.selectedQuantity)
+  let cotizarSKU = (e:any, cellData:any) => {
+    console.log(e)
+    console.log(cellData)
+  }
 
-}
+  let agregarCarrito = (e:any, cellData:any) => {
+    console.log(e)
+    console.log(cellData)
+    
+    if(dispatch){
+      dispatch({
+        type: "SET_QUANTITY",
+        args: { quantity: 5}
+      })
+      dispatch({
+        type: "SET_BUY_BUTTON_CLICKED",
+        args: { clicked: true}
+      })
+    }
 
-useEffect(() => {
+    console.log(productContextValue?.selectedQuantity)
 
-  const filterOptions: any = {}
-  filterOptions['sku'] = {
-    label: 'SKU',
-    renderFilterLabel: (st:any) => {
-      if (!st || !st.object) {
-        return 'Any';
-      }
-      return `${st.verb === '=' ? 'is' : st.verb === '!=' ? 'is not' : 'contains'} ${st.object}`;
-    },
-    verbs: [
-      {
-        label: 'contains',
-        value: 'contains',
-        object: simpleInputObject,
+  }
+
+  useEffect(() => {
+
+    const filterOptions: any = {}
+    filterOptions['sku'] = {
+      label: 'SKU',
+      renderFilterLabel: (st:any) => {
+        if (!st || !st.object) {
+          return 'Any';
+        }
+        return `${st.verb === '=' ? 'is' : st.verb === '!=' ? 'is not' : 'contains'} ${st.object}`;
       },
-    ],
-  }
-  filterOptions['descripcion'] = {
-    label: 'Descripción',
-    renderFilterLabel: (st:any) => {
-      if (!st || !st.object) {
-        return 'Any';
-      }
-      return `${st.verb === '=' ? 'is' : st.verb === '!=' ? 'is not' : 'contains'} ${st.object}`;
-    },
-    verbs: [
-      {
-        label: 'contains',
-        value: 'contains',
-        object: simpleInputObject,
+      verbs: [
+        {
+          label: 'contains',
+          value: 'contains',
+          object: simpleInputObject,
+        },
+      ],
+    }
+    filterOptions['descripcion'] = {
+      label: 'Descripción',
+      renderFilterLabel: (st:any) => {
+        if (!st || !st.object) {
+          return 'Any';
+        }
+        return `${st.verb === '=' ? 'is' : st.verb === '!=' ? 'is not' : 'contains'} ${st.object}`;
       },
-    ],
-  }
+      verbs: [
+        {
+          label: 'contains',
+          value: 'contains',
+          object: simpleInputObject,
+        },
+      ],
+    }
 
-  const schemaResult:{properties:any} = {
-    properties: {
-      sku: {
-        title: 'SKU',
-        width: 100,
-        headerRenderer: (elem: any ) => {
-          return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
-        },
-      },
-      descripcion: {
-        title: 'Descripción',
-        width: 200,
-        headerRenderer: (elem: any ) => {
-          return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
-        },
-      }
-    },
-  }
-  
-  servicioPrivarsa.getMainProductInfo("1").then((data:MainProductInfoResponse) => {
-    data.mainProductInfo.specifications.forEach((especifiacion:Specification) => {
-      filterOptions[especifiacion.header] = {
-        label: especifiacion.header,
-        renderFilterLabel: (st:any) => {
-          if (!st || !st.object) {
-            return 'Any';
-          }
-          return `${st.verb === '=' ? 'is' : st.verb === '!=' ? 'is not' : 'contains'} ${st.object}`;
-        },
-        verbs: [
-          {
-            label: 'contains',
-            value: 'contains',
-            object: simpleInputObject,
+    const schemaResult:{properties:any} = {
+      properties: {
+        sku: {
+          title: 'SKU',
+          width: 100,
+          headerRenderer: (elem: any ) => {
+            return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
           },
-        ],
-      };
-      schemaResult.properties[especifiacion.header] = { 
-        title: especifiacion.name, 
-        width: 100,
-        headerRenderer: (elem: any ) => {
-          return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
         },
-       };
-    }); 
-  
-    schemaResult.properties["precio"] = {
-      title: 'Precio',
-      width: 100,
-      headerRenderer: (elem: any ) => {
-        return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
-      },
-    },
-
-    schemaResult.properties["cont_compra"] = { 
-      title: "Comprar", 
-      cellRenderer: ({ cellData }: any) => {
-        return (
-          <div className={`${handles.SKUSpecificationTable_CustomCell} flex flex-wrap`}>
-            <NumericStepper
-            size="small"
-            value= {cellData.valor}
-            minValue= '1'
-            onChange={(event: any) => addRemoveCounter(event.value, cellData.id )}
-            />
-            <Button variation="primary" size="small" onClick ={(e:any)=> agregarCarrito(e, cellData)}><IconCart/></Button>
-          </div>
-        )
-      }, 
-      width: 300,
-      headerRenderer: (elem: any ) => {
-        return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
+        descripcion: {
+          title: 'Descripción',
+          headerRenderer: (elem: any ) => {
+            return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
+          },
+        }
       },
     }
-  });
+    
+    servicioPrivarsa.getMainProductInfo("1").then((data:MainProductInfoResponse) => {
+      data.mainProductInfo.specifications.forEach((especifiacion:Specification) => {
+        filterOptions[especifiacion.header] = {
+          label: especifiacion.header,
+          renderFilterLabel: (st:any) => {
+            if (!st || !st.object) {
+              return 'Any';
+            }
+            return `${st.verb === '=' ? 'is' : st.verb === '!=' ? 'is not' : 'contains'} ${st.object}`;
+          },
+          verbs: [
+            {
+              label: 'contains',
+              value: 'contains',
+              object: simpleInputObject,
+            },
+          ],
+        };
+        schemaResult.properties[especifiacion.header] = { 
+          title: especifiacion.name, 
+          width: 100,
+          headerRenderer: (elem: any ) => {
+            return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
+          },
+        };
+      }); 
+    
+      schemaResult.properties["precio"] = {
+        title: 'Precio',
+        width: 100,
+        headerRenderer: (elem: any ) => {
+          return <label className={`${handles.SKUSpecificationTable_CustomHeader}`}>{elem.title}</label>
+        },
+      },
 
-  setdefaultSchema(schemaResult)
-  setdefaultFilters(filterOptions)
+      schemaResult.properties["cont_compra"] = { 
+        title: "Comprar", 
+        width: 300,
+        cellRenderer: ({ cellData }: any) => {
+          return (
+            <div className={`${handles.SKUSpecificationTable_CustomCell} flex flex-wrap`}>
+              <NumericStepper
+              size="small"
+              value= {cellData.valor}
+              minValue= '1'
+              onChange={(event: any) => addRemoveCounter(event.value, cellData )}
+              />
+              <Button variation="primary" size="small" onClick ={(e:any)=> agregarCarrito(e, cellData)}><IconCart/></Button>
+            </div>
+          )
+        }, 
+        headerRenderer: (elem: any ) => {
+          return <label className={`${handles.SKUSpecificationTable_CustomHeader} w-100 tc`}>{elem.title}</label>
+        },
+      },
 
-},[])
+      schemaResult.properties["cotizar"] = {
+        title: 'Cotizar',
+        width: 200,
+        cellRenderer: ({ cellData }: any) => {
+          return (
+            <div className={`${handles.SKUSpecificationTable_CustomCell} flex flex-wrap`}>
+              <Button variation="primary" size="small" onClick ={(e:any)=> cotizarSKU(e, cellData)}>Cotizar</Button>
+            </div>
+          )
+        }, 
+        headerRenderer: (elem: any ) => {
+          return <label className={`${handles.SKUSpecificationTable_CustomHeader} w-100 tc`}>{elem.title}</label>
+        },
+      }
+
+    });
+
+    setdefaultSchema(schemaResult)
+    setdefaultFilters(filterOptions)
+
+  },[])
 
 
-//handlers
-const handleNextClick = () => {
-  const newPage:TablePagination = {
-    currentPage: currentProps.currentPage + 1,
-    currentItemFrom: currentProps.currentItemTo + 1,
-    currentItemTo: tableLength * (currentProps.currentPage + 1)
+  //handlers
+  const handleNextClick = () => {
+    const newPage:TablePagination = {
+      currentPage: currentProps.currentPage + 1,
+      currentItemFrom: currentProps.currentItemTo + 1,
+      currentItemTo: tableLength * (currentProps.currentPage + 1)
+    }
+    setNewProps(newPage)
   }
-  setNewProps(newPage)
-}
 
-const handlePrevClick = () => {
-  if (currentProps.currentPage === 0) return
-  const newPage:TablePagination = {
-    currentPage: currentProps.currentPage - 1,
-    currentItemFrom: currentProps.currentItemFrom - tableLength,
-    currentItemTo: currentProps.currentItemFrom - 1
+  const handlePrevClick = () => {
+    if (currentProps.currentPage === 0) return
+    const newPage:TablePagination = {
+      currentPage: currentProps.currentPage - 1,
+      currentItemFrom: currentProps.currentItemFrom - tableLength,
+      currentItemTo: currentProps.currentItemFrom - 1
+    }
+    setNewProps(newPage)
   }
-  setNewProps(newPage)
-}
+
+
+  const handleRowsClick = (rowData:any) => {
+    console.log(rowData)
+    console.log(rowData.itm)
+
+    if(dispatch){
+      dispatch({
+        type: "SET_SELECTED_ITEM",
+        args: { item: rowData.itm}
+      })
+    }
+  }
 
   const cambioBusqueda = (val:any) => {
     setFiltros(val)
@@ -278,17 +326,20 @@ const handlePrevClick = () => {
     <div>
       <h2>Vista especifiaciones</h2>
       <div className={`${handles.SKUSpecificationTable_Container}`}>
-        <Table 
+        <Table
           schema={defaultSchema} 
           items={datosPagina} 
           fullWidth 
           density="high"
+          highlightOnHover
+          onRowClick= {({rowData}:any) => 
+            handleRowsClick(rowData)
+          }
           pagination={{
             onNextClick: handleNextClick,
             onPrevClick: handlePrevClick,
             currentItemFrom: currentProps.currentItemFrom,
             currentItemTo: currentProps.currentItemTo,
-            //onRowsChange: this.handleRowsChange,
             textShowRows: 'Show rows',
             textOf: 'of',
             totalItems: total
