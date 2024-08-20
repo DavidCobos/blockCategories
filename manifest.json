@@ -1,9 +1,9 @@
 {
   "vendor": "privarsa",
-  "name": "categorias",
-  "version": "0.0.1",
-  "title": "categorias",
-  "description": "Bloques referentes a categorias y subcategorias",
+  "name": "custom-categories-widgets",
+  "version": "0.0.3",
+  "title": "Categorias",
+  "description": "Bloques referentes a categorias, subcategorias y productos",
   "defaultLocale": "es-MX",
   "builders": {
     "messages": "1.x",

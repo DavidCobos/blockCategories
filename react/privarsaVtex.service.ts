@@ -1,7 +1,7 @@
 async function getCategories(categoryId: number){
     try
     {
-        const catRes = await fetch("https://davidprivarsa--privarsa.myvtex.com/privarsa/subcategory/" + categoryId, {
+        const catRes = await fetch("/privarsa/subcategory/" + categoryId, {
             headers:{
                 "Cache-Control": "max-age=3600000, forceMaxAge"
             }
@@ -22,7 +22,7 @@ async function getCategories(categoryId: number){
 async function getMainProductInfo(productId: string){
     try
     {
-        const catRes = await fetch("https://davidprivarsa--privarsa.myvtex.com/privarsa/mainproductinfo/" + productId, {
+        const catRes = await fetch("/privarsa/mainproductinfo/" + productId, {
             headers:{
                 "Cache-Control": "max-age=3600000, forceMaxAge"
             }
@@ -43,7 +43,7 @@ async function getMainProductInfo(productId: string){
 async function getProductSpecification(mainProductId: number){
     try
     {
-        const catRes = await fetch("https://davidprivarsa--privarsa.myvtex.com/privarsa/productspecifications/" + mainProductId, {
+        const catRes = await fetch("/privarsa/productspecifications/" + mainProductId, {
             headers:{
                 "Cache-Control": "max-age=3600000, forceMaxAge"
             }

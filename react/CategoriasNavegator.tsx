@@ -24,7 +24,7 @@ const CategoriasNavegator: StorefrontFunctionComponent<CategoriasNavProps> = ({i
   //Breadcrumb
   const selectCategory = (id:number, nombre:string, url:string) => {
     if (selectedCategory > 0) {
-      window.location.href = url.replace('https://privarsa.vtexcommercestable.com.br', 'https://davidprivarsa--privarsa.myvtex.com');
+      window.location.href = url.replace('https://privarsa.vtexcommercestable.com.br', '');
     }else{
       setSelected(id)
       setSelectedName(nombre)
