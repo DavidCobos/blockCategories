@@ -40,7 +40,7 @@ async function getMainProductInfo(productId: string){
     }
 }
 
-async function getProductSpecification(mainProductId: number){
+async function getProductSpecification(mainProductId: string){
     try
     {
         const catRes = await fetch("/privarsa/productspecifications/" + mainProductId, {

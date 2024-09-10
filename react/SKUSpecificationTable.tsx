@@ -49,10 +49,9 @@ const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTablePr
   //dataSource
   useEffect(() => {
     const itemsT:any[] = []
-    // const productId = productContextValue?.product?.productReference ?? ""
-    // console.log(productId)
+    const productId = productContextValue?.product?.productReference ?? ""
 
-    servicioPrivarsa.getProductSpecification(1).then((data:ProductSpecificationResponse) => {
+    servicioPrivarsa.getProductSpecification(productId).then((data:ProductSpecificationResponse) => {
       productContextValue?.product?.items.forEach((skuItem:any) => {
 
         let itm:any = {}
@@ -239,7 +238,7 @@ const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTablePr
               minValue= '1'
               onChange={(event: any) => addRemoveCounter(event.value, cellData )}
               />
-              <Button variation="primary" size="small" onClick ={(e:any)=> agregarCarrito(e, cellData)}><IconCart/></Button>
+              <Button variation="primary" size="small" onClick ={(e:any)=> agregarCarrito(e, cellData)}><IconCart /></Button>
             </div>
           )
         }, 
