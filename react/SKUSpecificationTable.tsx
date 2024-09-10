@@ -1,7 +1,3 @@
-
-
-
-
 import React, {useState, useEffect } from 'react'
 import { useCssHandles } from 'vtex.css-handles'
 import { useProduct, useProductDispatch } from 'vtex.product-context'
@@ -238,7 +234,7 @@ const SKUSpecificationTable: StorefrontFunctionComponent<SKUSpecificationTablePr
               minValue= '1'
               onChange={(event: any) => addRemoveCounter(event.value, cellData )}
               />
-              <Button variation="primary" size="small" onClick ={(e:any)=> agregarCarrito(e, cellData)}><IconCart /></Button>
+              <Button variation="primary" size="small" onClick ={(e:any)=> agregarCarrito(e, cellData)}><span><IconCart size="24" viewBox="0 0 28 22" /></span></Button>
             </div>
           )
         }, 

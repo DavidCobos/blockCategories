@@ -1,11 +1,5 @@
 .SKUSpecificationTable_CustomCell {
-    height: 32px;
-    margin: auto;
-    vertical-align: middle;
-}
-
-.SKUSpecificationTable_CustomCell .vtex-button{
-    height: 25px !important;
-    margin: auto;
+    height: 100%;
+    margin: 0 auto;
     vertical-align: middle;
 }
